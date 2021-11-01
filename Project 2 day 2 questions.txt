@@ -1,0 +1,50 @@
+﻿1. Identify the offensive traffic.
+   * Identify the traffic between your machine and the web machine:
+      * When did the interaction occur?
+The interaction occurred on 10-17-2021 around 11-12 P.M to A.M
+      * What responses did the victim send back?
+The responses given were 60% 200 or successful connection, while minority of 401 or an unauthorized request and 301 or moved permanently both at 20%
+      * What data is concerning from the Blue Team perspective?
+The amount of 400 error codes could indicate a possible attack attempt, then following the amount of 200 codes could indicate the level of integrity of our network, and shows that the possible malicious figure could have been successful at their attempts
+2. Find the request for the hidden directory.
+   * In your attack, you found a secret folder. Let's look at that interaction between these two machines.
+      * How many requests were made to this directory? At what time and from which IP address(es)?
+We received 14,321 hits to this directory on 10/26/2021 from around 11:30-11:38 P.M. The IP addresses found are 192.168.1.105 and 192.168.1.90
+      * Which files were requested? What information did they contain?
+Doc files were requested. This file contains the hash of Ryans password.
+      * What kind of alarm would you set to detect this behavior in the future?
+I would create an alert to be sent to the analysts within the network. They would have to determine a proper baseline & threshold based on normal network traffic, then examine based on alerts given. 
+      * Identify at least one way to harden the vulnerable machine that would mitigate this attack.
+I would start by encrypting all files, create a password policy ensuring hashes would not be stored in a file that is not encrypted, then create a policy to strengthen passwords. 
+3. Identify the brute force attack.
+   * After identifying the hidden directory, you used Hydra to brute-force the target server. Answer the following questions:
+      * Can you identify packets specifically from Hydra? 
+Yes using the user_agent.original field you can specify Hydra packets
+      * How many requests were made in the brute-force attack?
+16,475 requests were made in the brute-force attack
+      * How many requests had the attacker made before discovering the correct password in this one?
+The attacker made 14,314 requests before discovering the correct password
+      * What kind of alarm would you set to detect this behavior in the future and at what threshold(s)?
+I would set an alert at 5 requests in order to properly determine if activity could be malicious. We would want this alert to be low but not 1 or 2 in the case of mistyping leading to a flood of alerts.
+      * Identify at least one way to harden the vulnerable machine that would mitigate this attack.
+I would enter a lockout-threshold, and require complex passwords including special characters, numbers, and capital letters
+4. Find the WebDav connection.
+   * Use your dashboard to answer the following questions:
+      * How many requests were made to this directory?
+A total of 318 requests were made to the webdav directory, 128 of which from the 192.168.1.105/webdav, and 190 of which to the 192.168.1.105/webdav/shell.php 
+      * Which file(s) were requested?
+.dav files were requested, and a hashed password was trying to be found
+      * What kind of alarm would you set to detect such access in the future?
+I would determine a baseline activity, then set a threshold for an alert to be sent to the Analyst once the threshold has been met.
+      * Identify at least one way to harden the vulnerable machine that would mitigate this attack.
+I would encrypt all contents of this folder, considering the nature of the file, and only allow access to specific IP addresses, I would not allow drag and drop file share, I would also allow for two-factor authentication for access to the folder.
+5. Identify the reverse shell and meterpreter traffic.
+   * To finish off the attack, you uploaded a PHP reverse shell and started a meterpreter shell session. Answer the following questions:
+      * Can you identify traffic from the meterpreter session?
+Yes through HTTP.request.method: “PUT” you can find inbound traffic relating to our file shell.php that acted as a listener on our attacking machines
+
+
+      * What kinds of alarms would you set to detect this behavior in the future?
+I would set an alert to the analyst if any traffic is from port 4444.
+      * Identify at least one way to harden the vulnerable machine that would mitigate this attack.
+I would mitigate this attack by closing port 4444, or only allowing specific users to interact. I would not allow for php scripts to be ran within the network.
